@@ -28,18 +28,19 @@ public class MatrixCell {
         return numerator/denominator;
     }
     
-    public void addScalarMultipleCell(MatrixCell other, int scalar){
-        int otherNumerator = numerator + scalar * other.getNumerator();
-        int otherDenominator = other.getDenominator();
-        int gcd = gcd(otherNumerator, otherDenominator);
-        if(gcd > 1){
-            otherNumerator /= gcd;
-            otherDenominator /= gcd;
-        }
+    public void addScalarMultipleCell(MatrixCell other, int numeratorScalar, int denominatorScalar){
+        int otherNumerator = numeratorScalar * other.getNumerator();
+        int otherDenominator = denominatorScalar * other.getDenominator();
+        int lcd = lcd(denominator, otherDenominator);
+
+        numerator *= lcd/Math.abs(denominator);
+        denominator *= lcd/Math.abs(denominator);
+
+        otherNumerator *= lcd/Math.abs(otherDenominator);
+        otherDenominator *= lcd/Math.abs(otherDenominator);
+
         numerator += otherNumerator;
-        if(numeratorDenominatorGcd() > 1){
-            numerator /= gcd;
-            numerator /= gcd;
-        }       
+
+        simplify();
     }    
 }

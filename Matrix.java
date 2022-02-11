@@ -19,4 +19,26 @@ public class Matrix {
             }
         } 
     }
+    
+    public void sortByLeadingNonZero(){
+        int[] leadingNonZeroPos = new int[matrix.length];
+
+        for(int i = 0; i < matrix.length; i++){
+            leadingNonZeroPos[i] = leadingNonZeroIndex(i);
+        }
+
+        int temp;
+        int pos = 0;
+        for(int j = 0; j < matrix.length; j++){
+            for(int k = pos; k < matrix.length; k++){
+                if(leadingNonZeroPos[k] == j){
+                    temp = leadingNonZeroPos[pos];
+                    leadingNonZeroPos[pos] = leadingNonZeroPos[k];
+                    leadingNonZeroPos[k] = temp;
+                    swapRow(pos++, k);
+                }
+            }
+        }
+
+    }
 }

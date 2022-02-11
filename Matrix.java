@@ -39,6 +39,32 @@ public class Matrix {
                 }
             }
         }
+    }
+    
+    public int leadingNonZeroIndex(int row){
+        int index = matrix.length;
+        for(int i = 0; i < matrix.length && index == matrix.length; i++){
+            if(matrix[row][i].getNumerator() != 0){
+                index = i;
+            }
+        }
+        return index;
+    }
 
+    public boolean hasColZeros(){
+        boolean zeros;
+        boolean colZeros = false;
+        for(int i = 0; i < matrix[0].length && !colZeros; i++){
+            zeros = true;
+            for(int k = 0; k < matrix.length && zeros; k++){
+                if(matrix[k][i].getNumerator() != 0){
+                    zeros = false;
+                }
+            }
+            if(zeros){
+                colZeros = true;
+            }
+        }
+        return colZeros;
     }
 }

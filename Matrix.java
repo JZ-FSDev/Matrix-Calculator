@@ -111,5 +111,24 @@ public class Matrix {
                 other.matrix[row][i].simplify();
             }
         }
-    }  
+    }
+    
+    public int trailingNonZeroIndex(int row){
+        int index = 0;
+        for(int i = matrix.length - 1; i >= 0 && index == 0; i--){
+            if(matrix[row][i].getNumerator() != 0){
+                index = i;
+            }
+        }
+        return index;
+    }
+    
+    public void swapRow(int row1, int row2){
+        MatrixCell swap;
+        for(int i = 0; i < matrix.length; i++){
+            swap = matrix[row1][i];
+            matrix[row1][i] = matrix[row2][i];
+            matrix[row2][i] = swap;
+        }
+    }    
 }

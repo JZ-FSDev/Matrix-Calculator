@@ -41,6 +41,28 @@ public class Matrix {
         }
     }
     
+    public void sortByLeadingNonZeroSimult(Matrix other){
+        int[] leadingNonZeroPos = new int[matrix.length];
+
+        for(int i = 0; i < matrix.length; i++){
+            leadingNonZeroPos[i] = leadingNonZeroIndex(i);
+        }
+
+        int temp;
+        int pos = 0;
+        for(int j = 0; j < matrix.length; j++){
+            for(int k = pos; k < matrix.length; k++){
+                if(leadingNonZeroPos[k] == j){
+                    temp = leadingNonZeroPos[pos];
+                    leadingNonZeroPos[pos] = leadingNonZeroPos[k];
+                    leadingNonZeroPos[k] = temp;
+                    other.swapRow(pos, k);
+                    swapRow(pos++, k);
+                }
+            }
+        }
+    }    
+    
     public int leadingNonZeroIndex(int row){
         int index = matrix.length;
         for(int i = 0; i < matrix.length && index == matrix.length; i++){

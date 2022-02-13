@@ -67,4 +67,27 @@ public class Matrix {
         }
         return colZeros;
     }
+    
+    public void changeLeadNonZeroToOneSimult(int row, Matrix other){
+        System.out.println("changeLeadNonZeroToOneSimult");
+        int leadNumeratorScalar = matrix[row][leadingNonZeroIndex(row)].getNumerator();
+        int leadDenominatorScalar = matrix[row][leadingNonZeroIndex(row)].getDenominator();
+        int numerator, denominator, otherNumerator, otherDenominator;
+        for(int i = 0; i < matrix.length; i++){
+            numerator = matrix[row][i].getNumerator();
+            denominator = matrix[row][i].getDenominator();
+            otherNumerator = other.matrix[row][i].getNumerator();
+            otherDenominator = other.matrix[row][i].getDenominator();
+            if(numerator != 0){
+                matrix[row][i].setNumerator(numerator * leadDenominatorScalar);
+                matrix[row][i].setDenominator(denominator * leadNumeratorScalar);
+                matrix[row][i].simplify();
+            }
+            if(otherNumerator != 0){
+                other.matrix[row][i].setNumerator(otherNumerator * leadDenominatorScalar);
+                other.matrix[row][i].setDenominator(otherDenominator * leadNumeratorScalar);
+                other.matrix[row][i].simplify();
+            }
+        }
+    }  
 }

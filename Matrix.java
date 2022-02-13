@@ -130,5 +130,25 @@ public class Matrix {
             matrix[row1][i] = matrix[row2][i];
             matrix[row2][i] = swap;
         }
+    }
+    
+    public void rowOperation(int row1, int row2, int numeratorScalar, int denominatorScalar){
+        for(int i = 0; i < matrix.length; i++){
+            matrix[row1][i].addScalarMultipleCell(matrix[row2][i], numeratorScalar, denominatorScalar);
+        }
+    }
+
+    public MatrixCell[][] identityMatrix(int n){
+        MatrixCell[][] toReturn = new MatrixCell[n][n];
+        for(int i = 0; i < toReturn.length; i++){
+            for(int k = 0; k < toReturn.length; k++){
+                if(i == k){
+                    toReturn[i][k] = new MatrixCell(1, 1);
+                }else{
+                    toReturn[i][k] = new MatrixCell(0, 1);
+                }
+            }
+        }
+        return toReturn;
     }    
 }

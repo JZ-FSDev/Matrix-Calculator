@@ -188,4 +188,24 @@ public class Matrix {
         }
         return identityForm;
     }    
+    
+    @Override
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < matrix.length; i++){
+            for(int j = 0; j < matrix.length; j++){
+                if(matrix[i][j].getDenominator() == 1){
+                    stringBuilder.append(matrix[i][j].getNumerator());
+                    stringBuilder.append("\t");
+                }else{
+                    stringBuilder.append(matrix[i][j].getNumerator());
+                    stringBuilder.append("/");
+                    stringBuilder.append(matrix[i][j].getDenominator());
+                    stringBuilder.append("\t");
+                }
+            }
+            stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
+    }    
 }

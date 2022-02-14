@@ -151,4 +151,27 @@ public class Matrix {
         }
         return toReturn;
     }    
+    
+    public boolean rowScalarMultiple(int row1, int row2){
+        boolean rowScalarMultiple = true;
+        boolean zeroColumn;
+        double row1Value, row2Value;
+        double scalarMultiple = 0;
+        for(int i = 0; i < matrix[0].length && rowScalarMultiple; i++){
+            row1Value = matrix[row1][i].numericalValue();
+            row2Value = matrix[row2][i].numericalValue();
+            if((row1Value == 0 && row2Value != 0) || (row1Value != 0 && row2Value == 0)){
+                rowScalarMultiple = false;
+            }else{
+                zeroColumn = row1Value == 0 && row1Value == 0;
+                if(!zeroColumn && scalarMultiple == 0){
+                    scalarMultiple = row1Value/row2Value;
+                }
+                if(!zeroColumn && row1Value / row2Value != scalarMultiple){
+                    rowScalarMultiple = false;
+                }
+            }
+        }
+        return rowScalarMultiple;
+    }    
 }

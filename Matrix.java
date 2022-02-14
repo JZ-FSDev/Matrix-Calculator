@@ -174,4 +174,18 @@ public class Matrix {
         }
         return rowScalarMultiple;
     }    
+    
+    public boolean identityForm(){
+        boolean identityForm = true;
+        for(int i = 0; i < matrix.length && identityForm; i ++){
+            for(int k = 0; k < matrix[i].length && identityForm; k++){
+                if(i == k && matrix[i][k].numericalValue() != 1){
+                    identityForm = false;
+                }else if(i != k && matrix[i][k].numericalValue() != 0){
+                    identityForm = false;
+                }
+            }
+        }
+        return identityForm;
+    }    
 }

@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Matrix {
     
     private MatrixCell[][] matrix;
@@ -19,79 +21,86 @@ public class Matrix {
             }
         } 
     }
-    
-    public void sortByLeadingNonZero(){
-        int[] leadingNonZeroPos = new int[matrix.length];
 
+    public Matrix(MatrixCell[][] matrix){
+        this.matrix = matrix;
+    }
+
+    public void printBothMatricesInversion(Matrix original, Matrix toInvert){
+        System.out.println(original);
+        System.out.println("toInvert Matrix:");
+        System.out.println(toInvert);
+    }
+
+    public Matrix invert(){
+        Matrix toInvert = new Matrix(identityMatrix(matrix.length));
+        printBothMatricesInversion(this, toInvert);
+        convertToRefForm(toInvert);
+        convertToRrefForm(toInvert);
+        return toInvert;
+    }
+
+
+    public void convertToRrefForm(Matrix toInvert){
+        int numeratorScalar, denominatorScalar;
+        for(int i = matrix.length - 1; i > 0; i--){
+            for(int j = i - 1; j >= 0; j--){
+                if(trailingNonZeroIndex(j) == trailingNonZeroIndex(i)){
+                    numeratorScalar = matrix[j][trailingNonZeroIndex(j)].getNumerator();
+                    denominatorScalar = matrix[j][trailingNonZeroIndex(j)].getDenominator();
+                    if(matrix[j][trailingNonZeroIndex(j)].getNumerator() < 0){
+                        rowOperation(j, i, numeratorScalar, denominatorScalar);
+                        toInvert.rowOperation(j, i, numeratorScalar, denominatorScalar);
+                    }else{
+                        rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                        toInvert.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                    }
+                }
+                printBothMatricesInversion(this, toInvert);
+            }
+        }
+    }
+
+    public void convertToRefForm(Matrix toInvert){
+        int numeratorScalar, denominatorScalar;
         for(int i = 0; i < matrix.length; i++){
-            leadingNonZeroPos[i] = leadingNonZeroIndex(i);
-        }
-
-        int temp;
-        int pos = 0;
-        for(int j = 0; j < matrix.length; j++){
-            for(int k = pos; k < matrix.length; k++){
-                if(leadingNonZeroPos[k] == j){
-                    temp = leadingNonZeroPos[pos];
-                    leadingNonZeroPos[pos] = leadingNonZeroPos[k];
-                    leadingNonZeroPos[k] = temp;
-                    swapRow(pos++, k);
+            changeLeadNonZeroToOneSimult(i, toInvert);
+            printBothMatricesInversion(this, toInvert);
+            for(int j = i + 1; j < matrix[i].length; j++){
+                sortByLeadingNonZeroSimult(toInvert);
+                if(leadingNonZeroIndex(j) == leadingNonZeroIndex(i)){
+                    numeratorScalar = matrix[j][leadingNonZeroIndex(j)].getNumerator();
+                    denominatorScalar = matrix[j][leadingNonZeroIndex(j)].getDenominator();
+                    if(matrix[j][leadingNonZeroIndex(j)].getNumerator() < 0){
+                        rowOperation(j, i, numeratorScalar, denominatorScalar);
+                        toInvert.rowOperation(j, i, numeratorScalar, denominatorScalar);
+                    }else{
+                        rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                        toInvert.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                    }
                 }
+                printBothMatricesInversion(this, toInvert);
             }
         }
     }
-    
-    public void sortByLeadingNonZeroSimult(Matrix other){
-        int[] leadingNonZeroPos = new int[matrix.length];
 
+
+    public void changeLeadNonZeroToOne(int row){
+        int leadNumeratorScalar = matrix[row][leadingNonZeroIndex(row)].getNumerator();
+        int leadDenominatorScalar = matrix[row][leadingNonZeroIndex(row)].getDenominator();
+        int numerator, denominator;
         for(int i = 0; i < matrix.length; i++){
-            leadingNonZeroPos[i] = leadingNonZeroIndex(i);
-        }
-
-        int temp;
-        int pos = 0;
-        for(int j = 0; j < matrix.length; j++){
-            for(int k = pos; k < matrix.length; k++){
-                if(leadingNonZeroPos[k] == j){
-                    temp = leadingNonZeroPos[pos];
-                    leadingNonZeroPos[pos] = leadingNonZeroPos[k];
-                    leadingNonZeroPos[k] = temp;
-                    other.swapRow(pos, k);
-                    swapRow(pos++, k);
-                }
+            numerator = matrix[row][i].getNumerator();
+            denominator = matrix[row][i].getDenominator();
+            if(numerator != 0){
+                matrix[row][i].setNumerator(numerator * leadDenominatorScalar);
+                matrix[row][i].setDenominator(denominator * leadNumeratorScalar);
+                matrix[row][i].simplify();
             }
         }
-    }    
-    
-    public int leadingNonZeroIndex(int row){
-        int index = matrix.length;
-        for(int i = 0; i < matrix.length && index == matrix.length; i++){
-            if(matrix[row][i].getNumerator() != 0){
-                index = i;
-            }
-        }
-        return index;
     }
 
-    public boolean hasColZeros(){
-        boolean zeros;
-        boolean colZeros = false;
-        for(int i = 0; i < matrix[0].length && !colZeros; i++){
-            zeros = true;
-            for(int k = 0; k < matrix.length && zeros; k++){
-                if(matrix[k][i].getNumerator() != 0){
-                    zeros = false;
-                }
-            }
-            if(zeros){
-                colZeros = true;
-            }
-        }
-        return colZeros;
-    }
-    
     public void changeLeadNonZeroToOneSimult(int row, Matrix other){
-        System.out.println("changeLeadNonZeroToOneSimult");
         int leadNumeratorScalar = matrix[row][leadingNonZeroIndex(row)].getNumerator();
         int leadDenominatorScalar = matrix[row][leadingNonZeroIndex(row)].getDenominator();
         int numerator, denominator, otherNumerator, otherDenominator;
@@ -112,7 +121,58 @@ public class Matrix {
             }
         }
     }
-    
+
+    public void sortByLeadingNonZero(){
+        int[] leadingNonZeroPos = new int[matrix.length];
+
+        for(int i = 0; i < matrix.length; i++){
+            leadingNonZeroPos[i] = leadingNonZeroIndex(i);
+        }
+
+        int temp;
+        int pos = 0;
+        for(int j = 0; j < matrix.length; j++){
+            for(int k = pos; k < matrix.length; k++){
+                if(leadingNonZeroPos[k] == j){
+                    temp = leadingNonZeroPos[pos];
+                    leadingNonZeroPos[pos] = leadingNonZeroPos[k];
+                    leadingNonZeroPos[k] = temp;
+                    swapRow(pos++, k);
+                }
+            }
+        }
+    }
+
+    public void sortByLeadingNonZeroSimult(Matrix other){
+        int[] leadingNonZeroPos = new int[matrix.length];
+        for(int i = 0; i < matrix.length; i++){
+            leadingNonZeroPos[i] = leadingNonZeroIndex(i);
+        }
+        int temp;
+        int pos = 0;
+        for(int j = 0; j < matrix.length; j++){
+            for(int k = pos; k < matrix.length; k++){
+                if(leadingNonZeroPos[k] == j){
+                    temp = leadingNonZeroPos[pos];
+                    leadingNonZeroPos[pos] = leadingNonZeroPos[k];
+                    leadingNonZeroPos[k] = temp;
+                    other.swapRow(pos, k);
+                    swapRow(pos++, k);
+                }
+            }
+        }
+    }
+
+    public int leadingNonZeroIndex(int row){
+        int index = matrix.length;
+        for(int i = 0; i < matrix.length && index == matrix.length; i++){
+            if(matrix[row][i].getNumerator() != 0){
+                index = i;
+            }
+        }
+        return index;
+    }
+
     public int trailingNonZeroIndex(int row){
         int index = 0;
         for(int i = matrix.length - 1; i >= 0 && index == 0; i--){
@@ -122,7 +182,7 @@ public class Matrix {
         }
         return index;
     }
-    
+
     public void swapRow(int row1, int row2){
         MatrixCell swap;
         for(int i = 0; i < matrix.length; i++){
@@ -131,7 +191,7 @@ public class Matrix {
             matrix[row2][i] = swap;
         }
     }
-    
+
     public void rowOperation(int row1, int row2, int numeratorScalar, int denominatorScalar){
         for(int i = 0; i < matrix.length; i++){
             matrix[row1][i].addScalarMultipleCell(matrix[row2][i], numeratorScalar, denominatorScalar);
@@ -150,8 +210,8 @@ public class Matrix {
             }
         }
         return toReturn;
-    }    
-    
+    }
+
     public boolean rowScalarMultiple(int row1, int row2){
         boolean rowScalarMultiple = true;
         boolean zeroColumn;
@@ -173,8 +233,8 @@ public class Matrix {
             }
         }
         return rowScalarMultiple;
-    }    
-    
+    }
+
     public boolean identityForm(){
         boolean identityForm = true;
         for(int i = 0; i < matrix.length && identityForm; i ++){
@@ -187,25 +247,52 @@ public class Matrix {
             }
         }
         return identityForm;
-    }    
-    
+    }
+
+    public boolean hasRowZeros(){
+        boolean zeros;
+        boolean rowZeros = false;
+        for(int i = 0; i < matrix[0].length && !rowZeros; i++){
+            zeros = true;
+            for(int k = 0; k < matrix.length && zeros; k++){
+                if(matrix[i][k].getNumerator() != 0){
+                    zeros = false;
+                }
+            }
+            if(zeros){
+                rowZeros = true;
+            }
+        }
+        return rowZeros;
+    }
+
+    public boolean hasColZeros(){
+        boolean zeros;
+        boolean colZeros = false;
+        for(int i = 0; i < matrix[0].length && !colZeros; i++){
+            zeros = true;
+            for(int k = 0; k < matrix.length && zeros; k++){
+                if(matrix[k][i].getNumerator() != 0){
+                    zeros = false;
+                }
+            }
+            if(zeros){
+                colZeros = true;
+            }
+        }
+        return colZeros;
+    }
+
     @Override
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i < matrix.length; i++){
             for(int j = 0; j < matrix.length; j++){
-                if(matrix[i][j].getDenominator() == 1){
-                    stringBuilder.append(matrix[i][j].getNumerator());
-                    stringBuilder.append("\t");
-                }else{
-                    stringBuilder.append(matrix[i][j].getNumerator());
-                    stringBuilder.append("/");
-                    stringBuilder.append(matrix[i][j].getDenominator());
-                    stringBuilder.append("\t");
-                }
+                stringBuilder.append(matrix[i][j]);
+                stringBuilder.append("\t");
             }
             stringBuilder.append("\n");
         }
         return stringBuilder.toString();
-    }    
+    }
 }

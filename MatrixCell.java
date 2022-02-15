@@ -27,7 +27,7 @@ public class MatrixCell {
     public double numericalValue(){
         return numerator/denominator;
     }
-    
+
     public void addScalarMultipleCell(MatrixCell other, int numeratorScalar, int denominatorScalar){
         int otherNumerator = numeratorScalar * other.getNumerator();
         int otherDenominator = denominatorScalar * other.getDenominator();
@@ -43,15 +43,23 @@ public class MatrixCell {
 
         simplify();
     }
-    
+
     public void simplify(){
-        numerator /= gcd(numerator, denominator);
-        denominator /= gcd(numerator, denominator);
+        int temp = numerator;
+        numerator /= gcd(temp, denominator);
+        denominator /= gcd(temp, denominator);
+        if(numerator < 0 && denominator < 0){
+            numerator *= -1;
+            denominator *= -1;
+        }
+        if(numerator == 0){
+            denominator = 1;
+        }
     } 
 
-    public int gcd(int a, int b){
+    public static int gcd(int a, int b){
         int gcd = 1;
-        for(int i = 1; i <= Math.min(a, b); i++){
+        for(int i = 1; i <= Math.abs(Math.min(a, b)); i++){
             if(a % i == 0 && b % i == 0){
                 gcd = i;
             }
@@ -67,5 +75,18 @@ public class MatrixCell {
             }   
         }
         return lcd;
-    }    
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        if(denominator == 1){
+            stringBuilder.append(numerator);
+        }else{
+            stringBuilder.append(numerator);
+            stringBuilder.append("/");
+            stringBuilder.append(denominator);
+        }
+        return stringBuilder.toString();
+    }
 }

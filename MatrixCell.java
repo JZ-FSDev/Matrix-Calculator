@@ -57,7 +57,7 @@ public class MatrixCell {
         }
     } 
 
-    public static int gcd(int a, int b){
+    public int gcd(int a, int b){
         int gcd = 1;
         for(int i = 1; i <= Math.abs(Math.min(a, b)); i++){
             if(a % i == 0 && b % i == 0){

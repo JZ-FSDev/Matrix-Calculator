@@ -40,4 +40,73 @@ public abstract class MatrixAlgorithms {
             }
         }
     }
+    
+        private static void convertToRefFormSimult(Matrix matrix, Matrix toInvert){
+        int numeratorScalar, denominatorScalar;
+        for(int i = 0; i < matrix.getMatrix().length; i++){
+            sortByLeadingNonZeroSimult(matrix, toInvert);
+            changeLeadNonZeroToOneSimult(i, matrix, toInvert);
+            for(int j = i + 1; j < matrix.getMatrix()[i].length; j++){
+                sortByLeadingNonZeroSimult(matrix, toInvert);
+                if(matrix.leadingNonZeroIndex(j) == matrix.leadingNonZeroIndex(i)){
+                    numeratorScalar = matrix.getMatrix()[j][matrix.leadingNonZeroIndex(j)].getNumerator();
+                    denominatorScalar = matrix.getMatrix()[j][matrix.leadingNonZeroIndex(j)].getDenominator();
+                    if(matrix.getMatrix()[j][matrix.leadingNonZeroIndex(j)].getNumerator() < 0){
+                        matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
+                        toInvert.rowOperation(j, i, numeratorScalar, denominatorScalar);
+                    }else{
+                        matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                        toInvert.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void sortByLeadingNonZeroSimult(Matrix matrix, Matrix other){
+        int[] leadingNonZeroPos = new int[matrix.getMatrix().length];
+        for(int i = 0; i < matrix.getMatrix().length; i++){
+            leadingNonZeroPos[i] = matrix.leadingNonZeroIndex(i);
+        }
+        int temp;
+        int pos = 0;
+        for(int j = 0; j < matrix.getMatrix().length; j++){
+            for(int k = pos; k < matrix.getMatrix().length; k++){
+                if(leadingNonZeroPos[k] == j){
+                    temp = leadingNonZeroPos[pos];
+                    leadingNonZeroPos[pos] = leadingNonZeroPos[k];
+                    leadingNonZeroPos[k] = temp;
+                    other.swapRow(pos, k);
+                    matrix.swapRow(pos++, k);
+                }
+            }
+        }
+    }
+
+    private static void printBothMatricesInversion(Matrix original, Matrix toInvert){
+        System.out.println(original);
+        System.out.println("toInvert Matrix:");
+        System.out.println(toInvert);
+    }
+
+    public static Matrix invert(Matrix matrix){
+        Matrix toInvert = new Matrix(Matrix.identityMatrix(matrix.getMatrix().length));
+        if(matrix.hasColZeros()){
+            System.out.println("Since the matrix has a column of zeros, the determinant of the matrix is zero and thus the inverse does not exist");
+        }else{
+            printBothMatricesInversion(matrix, toInvert);
+            convertToRefFormSimult(matrix, toInvert);
+            if(matrix.hasRowZeros()){
+                System.out.println("Since the matrix has a row of zeros, the determinant of the matrix is zero and thus the inverse does not exist");
+            }else{
+                convertToRrefFormSimult(matrix, toInvert);
+            }
+        }
+        return toInvert;
+    }
+
+    public static String determinant(Matrix matrix){
+        matrix.convertToRefForm();
+        return matrix.mainDiagonalProduct();
+    }
 }

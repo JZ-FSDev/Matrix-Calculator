@@ -48,6 +48,10 @@ public class MatrixCell {
             numerator *= -1;
             denominator *= -1;
         }
+        if(numerator > 0 && denominator < 0){
+            numerator *= -1;
+            denominator *= -1;
+        }
         if(numerator == 0){
             denominator = 1;
         }

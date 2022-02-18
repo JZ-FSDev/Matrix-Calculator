@@ -61,7 +61,7 @@ public class Matrix {
         for(int i = matrix.length - 1; i > 0; i--){
             for(int j = i - 1; j >= 0; j--){
                 if(trailingNonZeroIndex(j) == trailingNonZeroIndex(i)){
-                    numeratorScalar = matrix[j][trailingNonZeroIndex(j)].getNumerator();
+                    numeratorScalar = Math.abs(matrix[j][trailingNonZeroIndex(j)].getNumerator());
                     denominatorScalar = matrix[j][trailingNonZeroIndex(j)].getDenominator();
                     if(matrix[j][trailingNonZeroIndex(j)].getNumerator() < 0){
                         rowOperation(j, i, numeratorScalar, denominatorScalar);
@@ -79,11 +79,10 @@ public class Matrix {
         for(int i = 0; i < matrix.length; i++){
             sortByLeadingNonZero();
             changeLeadNonZeroToOne(i);
-            System.out.println(this);
             for(int j = i + 1; j < matrix[i].length; j++){
                 sortByLeadingNonZero();
                 if(leadingNonZeroIndex(j) == leadingNonZeroIndex(i)){
-                    numeratorScalar = matrix[j][leadingNonZeroIndex(j)].getNumerator();
+                    numeratorScalar = Math.abs(matrix[j][leadingNonZeroIndex(j)].getNumerator());
                     denominatorScalar = matrix[j][leadingNonZeroIndex(j)].getDenominator();
                     if(matrix[j][leadingNonZeroIndex(j)].getNumerator() < 0){
                         rowOperation(j, i, numeratorScalar, denominatorScalar);
@@ -247,7 +246,7 @@ public class Matrix {
         for(int i = 0; i < matrix.length; i++){
             for(int j = 0; j < matrix.length; j++){
                 stringBuilder.append(matrix[i][j]);
-                stringBuilder.append("\t");
+                stringBuilder.append("        ");
             }
             stringBuilder.append("\n");
         }

@@ -176,11 +176,11 @@ public class Matrix {
     }
 
     /**
-     * Return the index of the first matrix cell of this matrix of the specified row that
-     * is a non-zero cell.
+     * Return the index of the first matrix cell of this matrix from the left
+     * of the specified row that is a non-zero cell.
      * 
-     * @param row The row to return the index of the first matrix cell that is non-zero.
-     * @return The index of the first matrix cell of this matrix of the specified row that
+     * @param row The row to return the index of the first matrix cell from the left that is non-zero.
+     * @return The index of the first matrix cell of this matrix from the left of the specified row that
      *         is a non-zero cell.
      */
     public int leadingNonZeroIndex(int row){
@@ -194,10 +194,12 @@ public class Matrix {
     }
 
     /**
+     * Return the index of the first matrix cell of this matrix from the right
+     * of the specified row that is a non-zero cell.
      * 
-     * 
-     * @param row
-     * @return
+     * @param row The row to return the index of the first matrix cell from the right that is non-zero.
+     * @return The index of the first matrix cell of this matrix from the right of the specified row that
+     *         is a non-zero cell.
      */
     public int trailingNonZeroIndex(int row){
         int index = 0;
@@ -209,6 +211,12 @@ public class Matrix {
         return index;
     }
 
+    /**
+     * Swaps the specified two rows of this matrix.
+     * 
+     * @param row1 The row to swap with the other specified row.
+     * @param row2 The row to swap with the other specified row.
+     */
     public void swapRow(int row1, int row2){
         MatrixCell swap;
         for(int i = 0; i < matrix.length; i++){
@@ -218,13 +226,28 @@ public class Matrix {
         }
     }
 
+    /**
+     * Performs a row operation by multiplying the specified numerator and denominator scalar
+     * to the specified row2 and adds it to row 1.
+     * 
+     * @param row1 The row to be added the scalar mutiplied row2. 
+     * @param row2 The row to be multiplied by the numerator and denominator scalars.
+     * @param numeratorScalar The scalar to multiply the numerator of row2.
+     * @param denominatorScalar The scalar to multiply the denominator or row2.
+     */
     public void rowOperation(int row1, int row2, int numeratorScalar, int denominatorScalar){
         for(int i = 0; i < matrix.length; i++){
             matrix[row1][i].addScalarMultipleCell(matrix[row2][i], numeratorScalar, denominatorScalar);
         }
     }
 
-
+    /**
+     * Returns true if the specified rows are scalar multiples of one another, false otherwise.
+     * 
+     * @param row1 The first row to compare with the other row for scalar multiplicity.
+     * @param row2 The second row to compare with the other row for scalar multiplicity.
+     * @return True if the specified rows are scalar multiples of one another, false otherwise.
+     */
     public boolean isRowScalarMultiple(int row1, int row2){
         boolean rowScalarMultiple = true;
         boolean zeroColumn;
@@ -248,6 +271,11 @@ public class Matrix {
         return rowScalarMultiple;
     }
 
+    /**
+     * Returns true if this matrix is in identity form, false otherwise.
+     * 
+     * @return True if this matrix is in identity form, false otherwise.
+     */
     public boolean isIdentityForm(){
         boolean identityForm = true;
         for(int i = 0; i < matrix.length && identityForm; i ++){
@@ -262,6 +290,11 @@ public class Matrix {
         return identityForm;
     }
 
+    /**
+     * Returns true if this matrix has a row of zeros, false otherwise.
+     * 
+     * @return True if this matrix has a row of zeros, false otherwise.
+     */
     public boolean hasRowZeros(){
         boolean zeros;
         boolean rowZeros = false;
@@ -279,6 +312,11 @@ public class Matrix {
         return rowZeros;
     }
 
+    /**
+     * Returns true if this matrix has a column of zeros, false otherwise.
+     * 
+     * @return True if this matrix has a column of zeros, false otherwise.
+     */
     public boolean hasColZeros(){
         boolean zeros;
         boolean colZeros = false;
@@ -296,10 +334,20 @@ public class Matrix {
         return colZeros;
     }
 
+    /**
+     * Returns this matrix's 2D matrix cell array.
+     * 
+     * @return This matrix's 2D matrix cell array.
+     */
     public MatrixCell[][] getMatrix(){
         return matrix;
     }
 
+    /**
+     * Returns this matrix as a String.
+     * 
+     * @return The String representation of this matrix.
+     */
     @Override
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();

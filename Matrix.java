@@ -1,9 +1,25 @@
 import java.util.Scanner;
 
+/**
+ * Defines a matrix of matrix cells.
+ *
+ * @author JZ-FSDev
+ * @since 17.0.1
+ * @version 0.0.1
+ */
 public class Matrix {
     
     private MatrixCell[][] matrix;
 
+    /**
+     * Creates a matrix of matrix cells of specified width, length, and
+     * rational numbers in the form of a String array.
+     * 
+     * @param width The width in matrix cells of the matrix.
+     * @param length The length in matrix cells of the matrix.
+     * @param nums The rational numbers for each of the matrix cells where each index
+     *             of the String array has rational or whole number(s) separated by spaces.
+     */
     public Matrix(int width, int length, String[] nums){
         matrix = new MatrixCell[width][length];
         int count = 0;
@@ -23,11 +39,21 @@ public class Matrix {
         }
     }
 
+    /**
+     * Creates a matrix based on the specified 2D matrix cell array.
+     *  
+     * @param matrix The matrix cell 2D array used to create the matrix.
+     */
     public Matrix(MatrixCell[][] matrix){
         this.matrix = matrix;
     }
 
-
+    /**
+     * Returns a 2D matrix cell array representing the identity matrix of specified size n.
+     * 
+     * @param n The size (length and width) of the identity matrix cell 2D array.
+     * @return A 2D matrix cell array representing the identity matrix of specified size n.
+     */
     public static MatrixCell[][] identityMatrix(int n){
         MatrixCell[][] toReturn = new MatrixCell[n][n];
         for(int i = 0; i < toReturn.length; i++){
@@ -42,7 +68,13 @@ public class Matrix {
         return toReturn;
     }
 
-
+    /**
+     * Returns the main diagonal product of this matrix as a simplified lowest form rational
+     * number as a String.
+     * 
+     * @return The main diagonal product of this matrix as a simplified lowest form rational
+     *         number as a String.
+     */
     public String mainDiagonalProduct(){
         int productNumerator = 1;
         int productDenominator = 1;
@@ -55,7 +87,9 @@ public class Matrix {
         return temp.toString();
     }
 
-
+    /**
+     * Converts this matrix to reduced row echelon form.
+     */
     public void convertToRrefForm(){
         int numeratorScalar, denominatorScalar;
         for(int i = matrix.length - 1; i > 0; i--){
@@ -73,7 +107,9 @@ public class Matrix {
         }
     }
 
-
+    /**
+     * Converts this matrix to row echelon form.
+     */
     public void convertToRefForm(){
         int numeratorScalar, denominatorScalar;
         for(int i = 0; i < matrix.length; i++){
@@ -94,7 +130,12 @@ public class Matrix {
         }
     }
 
-
+    /**
+     * Multiplies the specified row of this matrix with the appropriate
+     * scalar to convert the the leading non-zero cell to the number 1.
+     * 
+     * @param row The row to convert to a leading 1.
+     */
     public void changeLeadNonZeroToOne(int row){
         int leadNumeratorScalar = matrix[row][leadingNonZeroIndex(row)].getNumerator();
         int leadDenominatorScalar = matrix[row][leadingNonZeroIndex(row)].getDenominator();
@@ -110,6 +151,11 @@ public class Matrix {
         }
     }
 
+    /**
+     * Sorts this matrix by left most leading non-zero rows at the top of the matrix
+     * with decreasing left leading non-zero rows under.  Full zero rows will be
+     * arranged to the bottom of the matrix.
+     */
     public void sortByLeadingNonZero(){
         int[] leadingNonZeroPos = new int[matrix.length];
         for(int i = 0; i < matrix.length; i++){
@@ -129,6 +175,14 @@ public class Matrix {
         }
     }
 
+    /**
+     * Return the index of the first matrix cell of this matrix of the specified row that
+     * is a non-zero cell.
+     * 
+     * @param row The row to return the index of the first matrix cell that is non-zero.
+     * @return The index of the first matrix cell of this matrix of the specified row that
+     *         is a non-zero cell.
+     */
     public int leadingNonZeroIndex(int row){
         int index = matrix.length-1;
         for(int i = 0; i < matrix.length && index == matrix.length-1; i++){
@@ -139,6 +193,12 @@ public class Matrix {
         return index;
     }
 
+    /**
+     * 
+     * 
+     * @param row
+     * @return
+     */
     public int trailingNonZeroIndex(int row){
         int index = 0;
         for(int i = matrix.length - 1; i >= 0 && index == 0; i--){
@@ -171,8 +231,8 @@ public class Matrix {
         double row1Value, row2Value;
         double scalarMultiple = 0;
         for(int i = 0; i < matrix[0].length && rowScalarMultiple; i++){
-            row1Value = matrix[row1][i].numericalValue();
-            row2Value = matrix[row2][i].numericalValue();
+            row1Value = matrix[row1][i].decimalValue();
+            row2Value = matrix[row2][i].decimalValue();
             if((row1Value == 0 && row2Value != 0) || (row1Value != 0 && row2Value == 0)){
                 rowScalarMultiple = false;
             }else{
@@ -192,9 +252,9 @@ public class Matrix {
         boolean identityForm = true;
         for(int i = 0; i < matrix.length && identityForm; i ++){
             for(int k = 0; k < matrix[i].length && identityForm; k++){
-                if(i == k && matrix[i][k].numericalValue() != 1){
+                if(i == k && matrix[i][k].decimalValue() != 1){
                     identityForm = false;
-                }else if(i != k && matrix[i][k].numericalValue() != 0){
+                }else if(i != k && matrix[i][k].decimalValue() != 0){
                     identityForm = false;
                 }
             }

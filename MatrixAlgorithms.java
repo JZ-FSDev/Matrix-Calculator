@@ -1,5 +1,26 @@
+/**
+ * Defines matrix algorithms used to solve or convert matrices.
+ *
+ * @author JZ-FSDev
+ * @since 17.0.1
+ * @version 0.0.1
+ */
 public abstract class MatrixAlgorithms {
     
+    /**
+     * Multiplies the specified row of this matrix with the appropriate
+     * scalar to convert the the leading non-zero cell to the number 1.
+     * Multiplies the speficied other matrix's row with the same scalar
+     * used in the conversion of the leading non-zero cell to the number 1
+     * in the original matrix. Used for the inversion algorithm where
+     * the other matrix is the identity matrix from the beginning of inversion.
+     * 
+     * 
+     * @param row The row to convert to a leading 1.
+     * @param matrix The matrix to have a row converted to a leading 1.
+     * @param other The other matrix to have the same operation repeated on the same
+     *              specified row.
+     */
     private static void changeLeadNonZeroToOneSimult(int row, Matrix matrix, Matrix other){
         int leadNumeratorScalar = matrix.getMatrix()[row][matrix.leadingNonZeroIndex(row)].getNumerator();
         int leadDenominatorScalar = matrix.getMatrix()[row][matrix.leadingNonZeroIndex(row)].getDenominator();
@@ -22,23 +43,34 @@ public abstract class MatrixAlgorithms {
         }
     }
 
-    private static void convertToRrefFormSimult(Matrix matrix, Matrix toInvert){
+    /**
+     * Converts the specified matrix to reduced row echelon form.
+     * Repeats the operations done on the matrix to the other specified matrix.
+     * Used for the inversion algorithm where the other matrix is the identity 
+     * matrix from the beginning of inversion.
+     * 
+     * @param matrix The matrix to be converted to reduced row echelon form.
+     * @param other The other matrix to have the same operations repeated when
+     *              converting the main matrix to reduced row echelon form.
+     */
+    private static void convertToRrefFormSimult(Matrix matrix, Matrix other){
         int numeratorScalar, denominatorScalar;
         for(int i = matrix.getMatrix().length - 1; i > 0; i--){
             for(int j = i - 1; j >= 0; j--){
                 
                 if(matrix.trailingNonZeroIndex(j) == matrix.trailingNonZeroIndex(i)){
+                    System.out.println(matrix.trailingNonZeroIndex(j) + " " + matrix.trailingNonZeroIndex(i));
                     numeratorScalar = Math.abs(matrix.getMatrix()[j][matrix.trailingNonZeroIndex(j)].getNumerator());
                     denominatorScalar = matrix.getMatrix()[j][matrix.trailingNonZeroIndex(j)].getDenominator();
                     if(matrix.getMatrix()[j][matrix.trailingNonZeroIndex(j)].getNumerator() < 0){
                         matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
-                        toInvert.rowOperation(j, i, numeratorScalar, denominatorScalar);
+                        other.rowOperation(j, i, numeratorScalar, denominatorScalar);
                     }else{
                         matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
-                        toInvert.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                        other.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
                     }
                 }
-                printBothMatricesInversion(matrix, toInvert);
+                printBothMatricesInversion(matrix, other);
             }
         }
     }
@@ -50,7 +82,6 @@ public abstract class MatrixAlgorithms {
             sortByLeadingNonZeroSimult(matrix, toInvert);
             changeLeadNonZeroToOneSimult(i, matrix, toInvert);
             for(int j = i + 1; j < matrix.getMatrix()[i].length; j++){
-                // sortByLeadingNonZeroSimult(matrix, toInvert);
                 if(matrix.leadingNonZeroIndex(j) == matrix.leadingNonZeroIndex(i)){
                     numeratorScalar = Math.abs(matrix.getMatrix()[j][matrix.leadingNonZeroIndex(j)].getNumerator());
                     denominatorScalar = matrix.getMatrix()[j][matrix.leadingNonZeroIndex(j)].getDenominator();

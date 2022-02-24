@@ -75,28 +75,49 @@ public abstract class MatrixAlgorithms {
         }
     }
 
-    private static void convertToRefFormSimult(Matrix matrix, Matrix toInvert){
+    /**
+     * Converts the specified matrix to row echelon form.
+     * Repeats the operations done on the matrix to the other specified matrix.
+     * Used for the inversion algorithm where the other matrix is the identity 
+     * matrix from the beginning of inversion.
+     * 
+     * @param matrix The matrix to be converted to reduced row echelon form.
+     * @param other The other matrix to have the same operations repeated when
+     *              converting the main matrix to reduced row echelon form.
+     */
+    private static void convertToRefFormSimult(Matrix matrix, Matrix other){
         int numeratorScalar, denominatorScalar;
         for(int i = 0; i < matrix.getMatrix().length; i++){
-            printBothMatricesInversion(matrix, toInvert);
-            sortByLeadingNonZeroSimult(matrix, toInvert);
-            changeLeadNonZeroToOneSimult(i, matrix, toInvert);
+            printBothMatricesInversion(matrix, other);
+            sortByLeadingNonZeroSimult(matrix, other);
+            changeLeadNonZeroToOneSimult(i, matrix, other);
             for(int j = i + 1; j < matrix.getMatrix()[i].length; j++){
                 if(matrix.leadingNonZeroIndex(j) == matrix.leadingNonZeroIndex(i)){
                     numeratorScalar = Math.abs(matrix.getMatrix()[j][matrix.leadingNonZeroIndex(j)].getNumerator());
                     denominatorScalar = matrix.getMatrix()[j][matrix.leadingNonZeroIndex(j)].getDenominator();
                     if(matrix.getMatrix()[j][matrix.leadingNonZeroIndex(j)].getNumerator() < 0){
                         matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
-                        toInvert.rowOperation(j, i, numeratorScalar, denominatorScalar);
+                        other.rowOperation(j, i, numeratorScalar, denominatorScalar);
                     }else{
                         matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
-                        toInvert.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                        other.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
                     }
                 }
             }
         }
     }
 
+    /**
+     * Sorts this matrix by left most leading non-zero rows at the top of the matrix
+     * with decreasing left leading non-zero rows under.  Full zero rows will be
+     * arranged to the bottom of the matrix.  Any operations used to sort the matrix
+     * will be repeated on the other matrix.  Used for the inversion algorithm where 
+     * the other matrix is the identity matrix from the beginning of inversion.
+     * 
+     * @param matrix The matrix to be converted to be sorted.
+     * @param other The other matrix to have the same operations repeated when
+     *              sorting the main matrix.
+     */
     private static void sortByLeadingNonZeroSimult(Matrix matrix, Matrix other){
         int[] leadingNonZeroPos = new int[matrix.getMatrix().length];
         for(int i = 0; i < matrix.getMatrix().length; i++){
@@ -117,6 +138,13 @@ public abstract class MatrixAlgorithms {
         }
     }
 
+    /**
+     * Prints both the main matrix and the matrix that is to resemble the inverted
+     * matrix from the inversion algorithm for debugging purposes.
+     * 
+     * @param original The main matrix to conver to the identity matrix.
+     * @param toInvert The matrix to resemble the inverted matrix after the inversion algorithm.
+     */
     private static void printBothMatricesInversion(Matrix original, Matrix toInvert){
         System.out.println(original);
         System.out.println("toInvert Matrix:");
@@ -124,6 +152,12 @@ public abstract class MatrixAlgorithms {
     }
 
 
+    /**
+     * 
+     * 
+     * @param matrix
+     * @return
+     */
     public static Matrix invert(Matrix matrix){
         Matrix toInvert = new Matrix(Matrix.identityMatrix(matrix.getMatrix().length));
         if(matrix.hasColZeros()){

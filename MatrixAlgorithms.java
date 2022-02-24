@@ -108,8 +108,8 @@ public abstract class MatrixAlgorithms {
     }
 
     /**
-     * Sorts this matrix by left most leading non-zero rows at the top of the matrix
-     * with decreasing left leading non-zero rows under.  Full zero rows will be
+     * Sorts the specified matrix by left most leading non-zero rows at the top of the
+     * matrix with decreasing left leading non-zero rows under.  Full zero rows will be
      * arranged to the bottom of the matrix.  Any operations used to sort the matrix
      * will be repeated on the other matrix.  Used for the inversion algorithm where 
      * the other matrix is the identity matrix from the beginning of inversion.
@@ -139,7 +139,7 @@ public abstract class MatrixAlgorithms {
     }
 
     /**
-     * Prints both the main matrix and the matrix that is to resemble the inverted
+     * Prints both the specified main matrix and matrix that is to resemble the inverted
      * matrix from the inversion algorithm for debugging purposes.
      * 
      * @param original The main matrix to conver to the identity matrix.
@@ -153,10 +153,12 @@ public abstract class MatrixAlgorithms {
 
 
     /**
+     * Performs the inversion algorithm on the specified matrix.  Will halt the algorithm if
+     * a column or row of zeros is introduced in the matrix, signifiying that the determinant
+     * of the matrix of zero and hence, not invertible.
      * 
-     * 
-     * @param matrix
-     * @return
+     * @param matrix The matrix to be inverted.
+     * @return The inverted matrix.
      */
     public static Matrix invert(Matrix matrix){
         Matrix toInvert = new Matrix(Matrix.identityMatrix(matrix.getMatrix().length));
@@ -173,6 +175,12 @@ public abstract class MatrixAlgorithms {
         return toInvert;
     }
 
+    /**
+     * Returns the determinant of the specified matrix.
+     * 
+     * @param matrix The matrix to have its determiannt computed.
+     * @return The determinant of the specified matrix.
+     */
     public static String determinant(Matrix matrix){
         matrix.convertToRefForm();
         return matrix.mainDiagonalProduct();

@@ -94,10 +94,12 @@ public class Matrix {
         int numeratorScalar, denominatorScalar;
         for(int i = matrix.length - 1; i > 0; i--){
             for(int j = i - 1; j >= 0; j--){
-                if(trailingNonZeroIndex(j) == trailingNonZeroIndex(i)){
-                    numeratorScalar = Math.abs(matrix[j][trailingNonZeroIndex(j)].getNumerator());
-                    denominatorScalar = matrix[j][trailingNonZeroIndex(j)].getDenominator();
-                    if(matrix[j][trailingNonZeroIndex(j)].getNumerator() < 0){
+                int topRow = trailingNonZeroIndex(i);
+                int lowerRow = trailingNonZeroIndex(j);
+                if(topRow == lowerRow){
+                    numeratorScalar = Math.abs(matrix[j][lowerRow].getNumerator());
+                    denominatorScalar = matrix[j][lowerRow].getDenominator();
+                    if(matrix[j][lowerRow].getNumerator() < 0){
                         rowOperation(j, i, numeratorScalar, denominatorScalar);
                     }else{
                         rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
@@ -116,11 +118,11 @@ public class Matrix {
             int topRow = leadingNonZeroIndex(i);
             System.out.println(this);
             sortByLeadingNonZero();
-            if(topRow != -1){
+            if(topRow != Integer.MAX_VALUE){
                 changeLeadNonZeroToOne(i);
                 for(int j = i + 1; j < matrix[i].length; j++){
                     int lowerRow = leadingNonZeroIndex(j);
-                    if(leadingNonZeroIndex(j) == leadingNonZeroIndex(i)){
+                    if(topRow == lowerRow && lowerRow != Integer.MAX_VALUE){
                         numeratorScalar = Math.abs(matrix[j][lowerRow].getNumerator());
                         denominatorScalar = matrix[j][lowerRow].getDenominator();
                         if(matrix[j][lowerRow].getNumerator() < 0){
@@ -142,7 +144,7 @@ public class Matrix {
      */
     public void changeLeadNonZeroToOne(int row){
         int leadindColIndex = leadingNonZeroIndex(row);
-        if(leadindColIndex == -1){
+        if(leadindColIndex == Integer.MAX_VALUE){
             leadindColIndex = getMatrix().length - 1;
         }
         int leadNumeratorScalar = matrix[row][leadindColIndex].getNumerator();
@@ -185,15 +187,15 @@ public class Matrix {
 
     /**
      * Return the index of the first matrix cell of this matrix from the left
-     * of the specified row that is a non-zero cell or -1 if the entire row is zeros.
+     * of the specified row that is a non-zero cell or Integer.MAX_VALUE if the entire row is zeros.
      * 
      * @param row The row to return the index of the first matrix cell from the left that is non-zero.
      * @return The index of the first matrix cell of this matrix from the left of the specified row that
-     *         is a non-zero cell or -1 if the entire row is zeros.
+     *         is a non-zero cell or Integer.MAX_VALUE if the entire row is zeros.
      */
     public int leadingNonZeroIndex(int row){
-        int index = -1;
-        for(int i = 0; i < matrix.length && index == -1; i++){
+        int index = Integer.MAX_VALUE;
+        for(int i = 0; i < matrix.length && index == Integer.MAX_VALUE; i++){
             if(matrix[row][i].getNumerator() != 0){
                 index = i;
             }

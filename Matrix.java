@@ -113,17 +113,21 @@ public class Matrix {
     public void convertToRefForm(){
         int numeratorScalar, denominatorScalar;
         for(int i = 0; i < matrix.length; i++){
+            int topRow = leadingNonZeroIndex(i);
+            System.out.println(this);
             sortByLeadingNonZero();
-            changeLeadNonZeroToOne(i);
-            for(int j = i + 1; j < matrix[i].length; j++){
-                sortByLeadingNonZero();
-                if(leadingNonZeroIndex(j) == leadingNonZeroIndex(i)){
-                    numeratorScalar = Math.abs(matrix[j][leadingNonZeroIndex(j)].getNumerator());
-                    denominatorScalar = matrix[j][leadingNonZeroIndex(j)].getDenominator();
-                    if(matrix[j][leadingNonZeroIndex(j)].getNumerator() < 0){
-                        rowOperation(j, i, numeratorScalar, denominatorScalar);
-                    }else{
-                        rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+            if(topRow != -1){
+                changeLeadNonZeroToOne(i);
+                for(int j = i + 1; j < matrix[i].length; j++){
+                    int lowerRow = leadingNonZeroIndex(j);
+                    if(leadingNonZeroIndex(j) == leadingNonZeroIndex(i)){
+                        numeratorScalar = Math.abs(matrix[j][lowerRow].getNumerator());
+                        denominatorScalar = matrix[j][lowerRow].getDenominator();
+                        if(matrix[j][lowerRow].getNumerator() < 0){
+                            rowOperation(j, i, numeratorScalar, denominatorScalar);
+                        }else{
+                            rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                        }
                     }
                 }
             }
@@ -137,8 +141,12 @@ public class Matrix {
      * @param row The row to convert to a leading 1.
      */
     public void changeLeadNonZeroToOne(int row){
-        int leadNumeratorScalar = matrix[row][leadingNonZeroIndex(row)].getNumerator();
-        int leadDenominatorScalar = matrix[row][leadingNonZeroIndex(row)].getDenominator();
+        int leadindColIndex = leadingNonZeroIndex(row);
+        if(leadindColIndex == -1){
+            leadindColIndex = getMatrix().length - 1;
+        }
+        int leadNumeratorScalar = matrix[row][leadindColIndex].getNumerator();
+        int leadDenominatorScalar = matrix[row][leadindColIndex].getDenominator();
         int numerator, denominator;
         for(int i = 0; i < matrix.length; i++){
             numerator = matrix[row][i].getNumerator();
@@ -177,15 +185,15 @@ public class Matrix {
 
     /**
      * Return the index of the first matrix cell of this matrix from the left
-     * of the specified row that is a non-zero cell.
+     * of the specified row that is a non-zero cell or -1 if the entire row is zeros.
      * 
      * @param row The row to return the index of the first matrix cell from the left that is non-zero.
      * @return The index of the first matrix cell of this matrix from the left of the specified row that
-     *         is a non-zero cell.
+     *         is a non-zero cell or -1 if the entire row is zeros.
      */
     public int leadingNonZeroIndex(int row){
-        int index = matrix.length-1;
-        for(int i = 0; i < matrix.length && index == matrix.length-1; i++){
+        int index = -1;
+        for(int i = 0; i < matrix.length && index == -1; i++){
             if(matrix[row][i].getNumerator() != 0){
                 index = i;
             }

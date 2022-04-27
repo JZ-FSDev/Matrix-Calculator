@@ -92,21 +92,23 @@ public abstract class MatrixAlgorithms {
     private static void convertToRefFormSimult(Matrix matrix, Matrix other){
         int numeratorScalar, denominatorScalar;
         for(int i = 0; i < matrix.getMatrix().length; i++){
+            int topRow = matrix.leadingNonZeroIndex(i);
             printBothMatricesInversion(matrix, other);
             sortByLeadingNonZeroSimult(matrix, other);
-            changeLeadNonZeroToOneSimult(i, matrix, other);
-            for(int j = i + 1; j < matrix.getMatrix()[i].length; j++){
-                int topRow = matrix.leadingNonZeroIndex(i);
-                int lowerRow = matrix.leadingNonZeroIndex(j);
-                if(topRow == lowerRow && lowerRow != -1){
-                    numeratorScalar = Math.abs(matrix.getMatrix()[j][lowerRow].getNumerator());
-                    denominatorScalar = matrix.getMatrix()[j][lowerRow].getDenominator();
-                    if(matrix.getMatrix()[j][lowerRow].getNumerator() < 0){
-                        matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
-                        other.rowOperation(j, i, numeratorScalar, denominatorScalar);
-                    }else if(matrix.getMatrix()[j][lowerRow].getNumerator() > 0){
-                        matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
-                        other.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+            if(topRow != -1){
+                changeLeadNonZeroToOneSimult(i, matrix, other);
+                for(int j = i + 1; j < matrix.getMatrix()[i].length; j++){
+                    int lowerRow = matrix.leadingNonZeroIndex(j);
+                    if(topRow == lowerRow && lowerRow != -1){
+                        numeratorScalar = Math.abs(matrix.getMatrix()[j][lowerRow].getNumerator());
+                        denominatorScalar = matrix.getMatrix()[j][lowerRow].getDenominator();
+                        if(matrix.getMatrix()[j][lowerRow].getNumerator() < 0){
+                            matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
+                            other.rowOperation(j, i, numeratorScalar, denominatorScalar);
+                        }else if(matrix.getMatrix()[j][lowerRow].getNumerator() > 0){
+                            matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                            other.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                        }
                     }
                 }
             }
@@ -128,6 +130,9 @@ public abstract class MatrixAlgorithms {
         int[] leadingNonZeroPos = new int[matrix.getMatrix().length];
         for(int i = 0; i < matrix.getMatrix().length; i++){
             leadingNonZeroPos[i] = matrix.leadingNonZeroIndex(i);
+            if(leadingNonZeroPos[i] == -1){
+                leadingNonZeroPos[i] = matrix.getMatrix().length;
+            }
         }
         int temp;
         int pos = 0;
@@ -152,8 +157,9 @@ public abstract class MatrixAlgorithms {
      * @param toInvert The matrix to resemble the inverted matrix after the inversion algorithm.
      */
     private static void printBothMatricesInversion(Matrix original, Matrix toInvert){
+        System.out.println("Original Matrix:");
         System.out.println(original);
-        System.out.println("toInvert Matrix:");
+        System.out.println("Inversion Matrix:");
         System.out.println(toInvert);
     }
 

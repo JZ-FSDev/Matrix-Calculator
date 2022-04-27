@@ -65,7 +65,7 @@ public abstract class MatrixAlgorithms {
                     if(matrix.getMatrix()[j][matrix.trailingNonZeroIndex(j)].getNumerator() < 0){
                         matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
                         other.rowOperation(j, i, numeratorScalar, denominatorScalar);
-                    }else{
+                    }else if(matrix.getMatrix()[j][matrix.trailingNonZeroIndex(j)].getNumerator() > 0){
                         matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
                         other.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
                     }
@@ -92,13 +92,15 @@ public abstract class MatrixAlgorithms {
             sortByLeadingNonZeroSimult(matrix, other);
             changeLeadNonZeroToOneSimult(i, matrix, other);
             for(int j = i + 1; j < matrix.getMatrix()[i].length; j++){
-                if(matrix.leadingNonZeroIndex(j) == matrix.leadingNonZeroIndex(i)){
-                    numeratorScalar = Math.abs(matrix.getMatrix()[j][matrix.leadingNonZeroIndex(j)].getNumerator());
-                    denominatorScalar = matrix.getMatrix()[j][matrix.leadingNonZeroIndex(j)].getDenominator();
-                    if(matrix.getMatrix()[j][matrix.leadingNonZeroIndex(j)].getNumerator() < 0){
+                int topRow = matrix.leadingNonZeroIndex(i);
+                int lowerRow = matrix.leadingNonZeroIndex(j);
+                if(topRow == lowerRow && lowerRow != -1){
+                    numeratorScalar = Math.abs(matrix.getMatrix()[j][lowerRow].getNumerator());
+                    denominatorScalar = matrix.getMatrix()[j][lowerRow].getDenominator();
+                    if(matrix.getMatrix()[j][lowerRow].getNumerator() < 0){
                         matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
                         other.rowOperation(j, i, numeratorScalar, denominatorScalar);
-                    }else{
+                    }else if(matrix.getMatrix()[j][lowerRow].getNumerator() > 0){
                         matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
                         other.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
                     }
@@ -169,6 +171,7 @@ public abstract class MatrixAlgorithms {
             if(matrix.hasRowZeros()){
                 System.out.println("Since the matrix has a row of zeros, the determinant of the matrix is zero and thus the inverse does not exist");
             }else{
+                System.out.println("happened");
                 convertToRrefFormSimult(matrix, toInvert);
             }
         }

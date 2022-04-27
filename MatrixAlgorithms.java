@@ -22,8 +22,12 @@ public abstract class MatrixAlgorithms {
      *              specified row.
      */
     private static void changeLeadNonZeroToOneSimult(int row, Matrix matrix, Matrix other){
-        int leadNumeratorScalar = matrix.getMatrix()[row][matrix.leadingNonZeroIndex(row)].getNumerator();
-        int leadDenominatorScalar = matrix.getMatrix()[row][matrix.leadingNonZeroIndex(row)].getDenominator();
+        int leadindColIndex = matrix.leadingNonZeroIndex(row);
+        if(leadindColIndex == -1){
+            leadindColIndex = matrix.getMatrix().length - 1;
+        }
+        int leadNumeratorScalar = matrix.getMatrix()[row][leadindColIndex].getNumerator();
+        int leadDenominatorScalar = matrix.getMatrix()[row][leadindColIndex].getDenominator();
         int numerator, denominator, otherNumerator, otherDenominator;
         for(int i = 0; i < matrix.getMatrix().length; i++){
             numerator = matrix.getMatrix()[row][i].getNumerator();
@@ -57,15 +61,15 @@ public abstract class MatrixAlgorithms {
         int numeratorScalar, denominatorScalar;
         for(int i = matrix.getMatrix().length - 1; i > 0; i--){
             for(int j = i - 1; j >= 0; j--){
-                
-                if(matrix.trailingNonZeroIndex(j) == matrix.trailingNonZeroIndex(i)){
-                    System.out.println(matrix.trailingNonZeroIndex(j) + " " + matrix.trailingNonZeroIndex(i));
-                    numeratorScalar = Math.abs(matrix.getMatrix()[j][matrix.trailingNonZeroIndex(j)].getNumerator());
-                    denominatorScalar = matrix.getMatrix()[j][matrix.trailingNonZeroIndex(j)].getDenominator();
-                    if(matrix.getMatrix()[j][matrix.trailingNonZeroIndex(j)].getNumerator() < 0){
+                int topRow = matrix.leadingNonZeroIndex(i);
+                int lowerRow = matrix.leadingNonZeroIndex(j);
+                if(topRow == lowerRow){
+                    numeratorScalar = Math.abs(matrix.getMatrix()[j][lowerRow].getNumerator());
+                    denominatorScalar = matrix.getMatrix()[j][lowerRow].getDenominator();
+                    if(matrix.getMatrix()[j][lowerRow].getNumerator() < 0){
                         matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
                         other.rowOperation(j, i, numeratorScalar, denominatorScalar);
-                    }else if(matrix.getMatrix()[j][matrix.trailingNonZeroIndex(j)].getNumerator() > 0){
+                    }else if(matrix.getMatrix()[j][lowerRow].getNumerator() > 0){
                         matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
                         other.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
                     }

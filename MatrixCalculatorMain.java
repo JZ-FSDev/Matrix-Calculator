@@ -3,11 +3,9 @@ import javax.swing.JFrame;
 import java.util.Scanner;
 
 /**
- * Defines the driver class prompting user input of a matrix in the form [1 2 3;
- * 1 2 3; 1 2 3]
- * and offering choices of conversion into REF or RREF form, inversion, or
- * computing the
- * determinant of the matrix.
+ * Defines the driver class prompting user input of a matrix in the form
+ * [1 2 3; 1 2 3; 1 2 3] and offering choices of conversion into REF or
+ * RREF form, inversion, or computing the determinant of the matrix.
  *
  * @author JZ-FSDev
  * @since 17.0.1
@@ -57,30 +55,30 @@ public class MatrixCalculatorMain {
                 break;
             case "REF":
                 input = JOptionPane
-                        .showInputDialog("Enter the constants column in the form [1 2 3]:");
+                        .showInputDialog("Enter the constants column in the form: 1 2 3");
                 input = input.trim();
-                input = input.substring(1, input.length() - 1);
-                token = input.split(";");
-                for (String s : token) {
-                    s.trim();
-                }
 
-                matrix.convertToRefForm();
-                JOptionPane.showMessageDialog(parent, matrix);
+                JOptionPane.showMessageDialog(parent, matrix + "\n" + s1);
                 break;
             case "RREF":
                 input = JOptionPane
-                        .showInputDialog("Enter the constants column in the form [1 2 3]:");
+                        .showInputDialog("Enter the constants column in the form: 1 2 3");
                 input = input.trim();
-                input = input.substring(1, input.length() - 1);
-                token = input.split(";");
-                for (String s : token) {
-                    s.trim();
+                token = input.split(" ");
+
+                MatrixCell[] constantCol2 = new MatrixCell[token.length];
+                for (int i = 0; i < constantCol2.length; i++) {
+                    constantCol2[i] = new MatrixCell(Integer.parseInt(token[i]), 1);
                 }
 
-                matrix.convertToRefForm();
-                matrix.convertToRrefForm();
-                JOptionPane.showMessageDialog(parent, matrix);
+                MatrixAlgorithms.convertToRefFormWithConstants(matrix, constantCol2);
+                MatrixAlgorithms.convertToRrefFormWithConstants(matrix, constantCol2);
+                String s2 = "Constant values from top to bottom: ";
+                for (int i = 0; i < constantCol2.length; i++) {
+                    s2 += constantCol2[i] + "  ";
+                }
+
+                JOptionPane.showMessageDialog(parent, matrix + "\n" + s2);
                 break;
         }
         System.exit(0);

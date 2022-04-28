@@ -57,6 +57,16 @@ public class MatrixCalculatorMain {
                 input = JOptionPane
                         .showInputDialog("Enter the constants column in the form: 1 2 3");
                 input = input.trim();
+                token = input.split(" ");
+                MatrixCell[] constantCol = new MatrixCell[token.length];
+                for (int i = 0; i < constantCol.length; i++) {
+                    constantCol[i] = new MatrixCell(Integer.parseInt(token[i]), 1);
+                }
+                MatrixAlgorithms.convertToRefFormWithConstants(matrix, constantCol);
+                String s1 = "Constant values from top to bottom: ";
+                for (int i = 0; i < constantCol.length; i++) {
+                    s1 += constantCol[i] + "  ";
+                }
 
                 JOptionPane.showMessageDialog(parent, matrix + "\n" + s1);
                 break;

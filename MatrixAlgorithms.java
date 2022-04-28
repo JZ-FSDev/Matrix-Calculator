@@ -79,6 +79,27 @@ public abstract class MatrixAlgorithms {
         }
     }
 
+    public static void convertToRrefFormWithConstants(Matrix matrix, MatrixCell[] constantCol){
+        int numeratorScalar, denominatorScalar;
+        for(int i = matrix.getMatrix().length - 1; i > 0; i--){
+            for(int j = i - 1; j >= 0; j--){
+                int topRow = matrix.trailingNonZeroIndex(i);
+                int lowerRow = matrix.trailingNonZeroIndex(j);
+                if(topRow == lowerRow){
+                    numeratorScalar = Math.abs(matrix.getMatrix()[j][lowerRow].getNumerator());
+                    denominatorScalar = matrix.getMatrix()[j][lowerRow].getDenominator();
+                    if(matrix.getMatrix()[j][lowerRow].getNumerator() < 0){
+                        matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
+                        constantCol[j].addScalarMultipleCell(matrix.getMatrix()[topRow][i], numeratorScalar, denominatorScalar);
+                    }else{
+                        matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                        constantCol[j].addScalarMultipleCell(matrix.getMatrix()[topRow][i], -1 * numeratorScalar, denominatorScalar);
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Converts the specified matrix to row echelon form.
      * Repeats the operations done on the matrix to the other specified matrix.

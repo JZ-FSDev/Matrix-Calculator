@@ -23,7 +23,7 @@ public abstract class MatrixAlgorithms {
      */
     private static void changeLeadNonZeroToOneSimult(int row, Matrix matrix, Matrix other){
         int leadindColIndex = matrix.leadingNonZeroIndex(row);
-        if(leadindColIndex == -1){
+        if(leadindColIndex == Integer.MAX_VALUE){
             leadindColIndex = matrix.getMatrix().length - 1;
         }
         int leadNumeratorScalar = matrix.getMatrix()[row][leadindColIndex].getNumerator();
@@ -61,15 +61,15 @@ public abstract class MatrixAlgorithms {
         int numeratorScalar, denominatorScalar;
         for(int i = matrix.getMatrix().length - 1; i > 0; i--){
             for(int j = i - 1; j >= 0; j--){
-                int topRow = matrix.leadingNonZeroIndex(i);
-                int lowerRow = matrix.leadingNonZeroIndex(j);
+                int topRow = matrix.trailingNonZeroIndex(i);
+                int lowerRow = matrix.trailingNonZeroIndex(j);
                 if(topRow == lowerRow){
                     numeratorScalar = Math.abs(matrix.getMatrix()[j][lowerRow].getNumerator());
                     denominatorScalar = matrix.getMatrix()[j][lowerRow].getDenominator();
                     if(matrix.getMatrix()[j][lowerRow].getNumerator() < 0){
                         matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
                         other.rowOperation(j, i, numeratorScalar, denominatorScalar);
-                    }else if(matrix.getMatrix()[j][lowerRow].getNumerator() > 0){
+                    }else{
                         matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
                         other.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
                     }
@@ -95,19 +95,45 @@ public abstract class MatrixAlgorithms {
             int topRow = matrix.leadingNonZeroIndex(i);
             printBothMatricesInversion(matrix, other);
             sortByLeadingNonZeroSimult(matrix, other);
-            if(topRow != -1){
+            if(topRow != Integer.MAX_VALUE){
                 changeLeadNonZeroToOneSimult(i, matrix, other);
                 for(int j = i + 1; j < matrix.getMatrix()[i].length; j++){
                     int lowerRow = matrix.leadingNonZeroIndex(j);
-                    if(topRow == lowerRow && lowerRow != -1){
+                    if(topRow == lowerRow && lowerRow != Integer.MAX_VALUE){
                         numeratorScalar = Math.abs(matrix.getMatrix()[j][lowerRow].getNumerator());
                         denominatorScalar = matrix.getMatrix()[j][lowerRow].getDenominator();
                         if(matrix.getMatrix()[j][lowerRow].getNumerator() < 0){
                             matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
                             other.rowOperation(j, i, numeratorScalar, denominatorScalar);
-                        }else if(matrix.getMatrix()[j][lowerRow].getNumerator() > 0){
+                        }else{
                             matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
                             other.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void convertToRefFormWithConstants(Matrix matrix, MatrixCell[] constantCol){
+        int numeratorScalar, denominatorScalar;
+        for(int i = 0; i < matrix.getMatrix().length; i++){
+            int topRow = matrix.leadingNonZeroIndex(i);
+            System.out.println(matrix);
+            matrix.sortByLeadingNonZero();
+            if(topRow != Integer.MAX_VALUE){
+                matrix.changeLeadNonZeroToOne(i);
+                for(int j = i + 1; j < matrix.getMatrix()[i].length; j++){
+                    int lowerRow = matrix.leadingNonZeroIndex(j);
+                    if(topRow == lowerRow && lowerRow != Integer.MAX_VALUE){
+                        numeratorScalar = Math.abs(matrix.getMatrix()[j][lowerRow].getNumerator());
+                        denominatorScalar = matrix.getMatrix()[j][lowerRow].getDenominator();
+                        if(matrix.getMatrix()[j][lowerRow].getNumerator() < 0){
+                            matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
+                            constantCol[j].addScalarMultipleCell(matrix.getMatrix()[topRow][i], numeratorScalar, denominatorScalar);
+                        }else{
+                            matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                            constantCol[j].addScalarMultipleCell(matrix.getMatrix()[topRow][i], -1 * numeratorScalar, denominatorScalar);
                         }
                     }
                 }
@@ -130,7 +156,7 @@ public abstract class MatrixAlgorithms {
         int[] leadingNonZeroPos = new int[matrix.getMatrix().length];
         for(int i = 0; i < matrix.getMatrix().length; i++){
             leadingNonZeroPos[i] = matrix.leadingNonZeroIndex(i);
-            if(leadingNonZeroPos[i] == -1){
+            if(leadingNonZeroPos[i] == Integer.MAX_VALUE){
                 leadingNonZeroPos[i] = matrix.getMatrix().length;
             }
         }
@@ -181,7 +207,6 @@ public abstract class MatrixAlgorithms {
             if(matrix.hasRowZeros()){
                 System.out.println("Since the matrix has a row of zeros, the determinant of the matrix is zero and thus the inverse does not exist");
             }else{
-                System.out.println("happened");
                 convertToRrefFormSimult(matrix, toInvert);
             }
         }

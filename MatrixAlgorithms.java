@@ -238,6 +238,19 @@ public abstract class MatrixAlgorithms {
         }
         int temp;
         int pos = 0;
+        for(int j = 0; j < matrix.getMatrix().length; j++){
+            for(int k = pos; k < matrix.getMatrix().length; k++){
+                if(leadingNonZeroPos[k] == j){
+                    temp = leadingNonZeroPos[pos];
+                    leadingNonZeroPos[pos] = leadingNonZeroPos[k];
+                    leadingNonZeroPos[k] = temp;
+                    MatrixCell swap = constantCol[pos];
+                    constantCol[pos] = constantCol[k];
+                    constantCol[k] = swap;
+                    matrix.swapRow(pos++, k);
+                }
+            }
+        }
     }
 
     /**

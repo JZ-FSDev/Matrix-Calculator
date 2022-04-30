@@ -228,6 +228,18 @@ public abstract class MatrixAlgorithms {
         }
     }
 
+    private static void sortByLeadingNonZeroWithConstants(Matrix matrix, MatrixCell[] constantCol){
+        int[] leadingNonZeroPos = new int[matrix.getMatrix().length];
+        for(int i = 0; i < matrix.getMatrix().length; i++){
+            leadingNonZeroPos[i] = matrix.leadingNonZeroIndex(i);
+            if(leadingNonZeroPos[i] == Integer.MAX_VALUE){
+                leadingNonZeroPos[i] = matrix.getMatrix().length;
+            }
+        }
+        int temp;
+        int pos = 0;
+    }
+
     /**
      * Prints both the specified main matrix and matrix that is to resemble the inverted
      * matrix from the inversion algorithm for debugging purposes.

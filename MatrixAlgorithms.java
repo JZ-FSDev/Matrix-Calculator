@@ -51,7 +51,7 @@ public abstract class MatrixAlgorithms {
         int leadindColIndex = matrix.leadingNonZeroIndex(row);
         if(leadindColIndex == Integer.MAX_VALUE){
             leadindColIndex = matrix.getMatrix().length - 1;
-        }        
+        }
         int leadNumeratorScalar = matrix.getMatrix()[row][leadindColIndex].getNumerator();
         int leadDenominatorScalar = matrix.getMatrix()[row][leadindColIndex].getDenominator();
         int numerator, denominator, otherNumerator, otherDenominator;
@@ -63,8 +63,15 @@ public abstract class MatrixAlgorithms {
                 matrix.getMatrix()[row][i].setDenominator(denominator * leadNumeratorScalar);
                 matrix.getMatrix()[row][i].simplify();
             }
-        }        
-    }    
+        }
+        otherNumerator = constantCol[row].getNumerator();
+        otherDenominator = constantCol[row].getDenominator();
+        if(otherNumerator != 0){
+            constantCol[row].setNumerator(otherNumerator * leadDenominatorScalar);
+            constantCol[row].setDenominator(otherDenominator * leadNumeratorScalar);
+            constantCol[row].simplify();
+        }
+    } 
 
     /**
      * Converts the specified matrix to reduced row echelon form.
@@ -98,31 +105,19 @@ public abstract class MatrixAlgorithms {
         }
     }
 
-    private static void changeLeadNonZeroToOneWithConstants(int row, Matrix matrix, MatrixCell[] constantCol){
-        int leadindColIndex = matrix.leadingNonZeroIndex(row);
-        if(leadindColIndex == Integer.MAX_VALUE){
-            leadindColIndex = matrix.getMatrix().length - 1;
-        }
-        int leadNumeratorScalar = matrix.getMatrix()[row][leadindColIndex].getNumerator();
-        int leadDenominatorScalar = matrix.getMatrix()[row][leadindColIndex].getDenominator();
-        int numerator, denominator, otherNumerator, otherDenominator;
-        for(int i = 0; i < matrix.getMatrix().length; i++){
-            numerator = matrix.getMatrix()[row][i].getNumerator();
-            denominator = matrix.getMatrix()[row][i].getDenominator();
-            if(numerator != 0){
-                matrix.getMatrix()[row][i].setNumerator(numerator * leadDenominatorScalar);
-                matrix.getMatrix()[row][i].setDenominator(denominator * leadNumeratorScalar);
-                matrix.getMatrix()[row][i].simplify();
-            }
-        }
-        otherNumerator = constantCol[row].getNumerator();
-        otherDenominator = constantCol[row].getDenominator();
-        if(otherNumerator != 0){
-            constantCol[row].setNumerator(otherNumerator * leadDenominatorScalar);
-            constantCol[row].setDenominator(otherDenominator * leadNumeratorScalar);
-            constantCol[row].simplify();
-        }
-    }
+    public static void convertToRrefFormWithConstants(Matrix matrix, MatrixCell[] constantCol){
+        int numeratorScalar, denominatorScalar;
+        int operatingColIndex;
+        for(int i = matrix.getMatrix().length - 1; i > 0; i--){
+            operatingColIndex = matrix.leadingNonZeroIndex(i);
+            if(operatingColIndex != Integer.MAX_VALUE){
+                for(int j = i - 1; j >= 0; j--){
+                    numeratorScalar = Math.abs(matrix.getMatrix()[j][operatingColIndex].getNumerator());
+                    denominatorScalar = matrix.getMatrix()[j][operatingColIndex].getDenominator();
+                    if(matrix.getMatrix()[j][operatingColIndex].getNumerator() < 0){
+                        constantCol[j].addScalarMultipleCell(constantCol[i], numeratorScalar, denominatorScalar);
+                        matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
+                    }else{
 
     /**
      * Converts the specified matrix to row echelon form.

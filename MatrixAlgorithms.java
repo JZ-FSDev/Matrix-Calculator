@@ -46,6 +46,16 @@ public abstract class MatrixAlgorithms {
             }
         }
     }
+    
+    private static void changeLeadNonZeroToOneWithConstants(int row, Matrix matrix, MatrixCell[] constantCol){
+        int leadindColIndex = matrix.leadingNonZeroIndex(row);
+        if(leadindColIndex == Integer.MAX_VALUE){
+            leadindColIndex = matrix.getMatrix().length - 1;
+        }
+        int leadNumeratorScalar = matrix.getMatrix()[row][leadindColIndex].getNumerator();
+        int leadDenominatorScalar = matrix.getMatrix()[row][leadindColIndex].getDenominator();
+        int numerator, denominator, otherNumerator, otherDenominator;
+    }    
 
     /**
      * Converts the specified matrix to reduced row echelon form.

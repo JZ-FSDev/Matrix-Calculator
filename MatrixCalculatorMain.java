@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 /**
  * Defines the driver class prompting user input of a matrix in the form
- * [1 2 3; 1 2 3; 1 2 3] and offering choices of conversion into REF or
+ * [1 2 3; 4 5 6; 7 8 9] and offering choices of conversion into REF or
  * RREF form, inversion, or computing the determinant of the matrix.
  *
  * @author JZ-FSDev
@@ -63,12 +63,8 @@ public class MatrixCalculatorMain {
                     constantCol[i] = new MatrixCell(Integer.parseInt(token[i]), 1);
                 }
                 MatrixAlgorithms.convertToRefFormWithConstants(matrix, constantCol);
-                String s1 = "Constant values from top to bottom: ";
-                for (int i = 0; i < constantCol.length; i++) {
-                    s1 += constantCol[i] + "  ";
-                }
 
-                JOptionPane.showMessageDialog(parent, matrix + "\n" + s1);
+                JOptionPane.showMessageDialog(parent, MatrixAlgorithms.matrixAndConstantColToString(matrix, constantCol));
                 break;
             case "RREF":
                 input = JOptionPane
@@ -83,12 +79,8 @@ public class MatrixCalculatorMain {
 
                 MatrixAlgorithms.convertToRefFormWithConstants(matrix, constantCol2);
                 MatrixAlgorithms.convertToRrefFormWithConstants(matrix, constantCol2);
-                String s2 = "Constant values from top to bottom: ";
-                for (int i = 0; i < constantCol2.length; i++) {
-                    s2 += constantCol2[i] + "  ";
-                }
 
-                JOptionPane.showMessageDialog(parent, matrix + "\n" + s2);
+                JOptionPane.showMessageDialog(parent, MatrixAlgorithms.matrixAndConstantColToString(matrix, constantCol2));
                 break;
         }
         System.exit(0);

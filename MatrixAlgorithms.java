@@ -98,24 +98,29 @@ public abstract class MatrixAlgorithms {
         }
     }
 
-    public static void convertToRrefFormWithConstants(Matrix matrix, MatrixCell[] constantCol){
-        int numeratorScalar, denominatorScalar;
-        for(int i = matrix.getMatrix().length - 1; i > 0; i--){
-            for(int j = i - 1; j >= 0; j--){
-                int topRow = matrix.trailingNonZeroIndex(i);
-                int lowerRow = matrix.trailingNonZeroIndex(j);
-                if(topRow == lowerRow){
-                    numeratorScalar = Math.abs(matrix.getMatrix()[j][lowerRow].getNumerator());
-                    denominatorScalar = matrix.getMatrix()[j][lowerRow].getDenominator();
-                    if(matrix.getMatrix()[j][lowerRow].getNumerator() < 0){
-                        matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
-                        constantCol[j].addScalarMultipleCell(matrix.getMatrix()[topRow][i], numeratorScalar, denominatorScalar);
-                    }else{
-                        matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
-                        constantCol[j].addScalarMultipleCell(matrix.getMatrix()[topRow][i], -1 * numeratorScalar, denominatorScalar);
-                    }
-                }
+    private static void changeLeadNonZeroToOneWithConstants(int row, Matrix matrix, MatrixCell[] constantCol){
+        int leadindColIndex = matrix.leadingNonZeroIndex(row);
+        if(leadindColIndex == Integer.MAX_VALUE){
+            leadindColIndex = matrix.getMatrix().length - 1;
+        }
+        int leadNumeratorScalar = matrix.getMatrix()[row][leadindColIndex].getNumerator();
+        int leadDenominatorScalar = matrix.getMatrix()[row][leadindColIndex].getDenominator();
+        int numerator, denominator, otherNumerator, otherDenominator;
+        for(int i = 0; i < matrix.getMatrix().length; i++){
+            numerator = matrix.getMatrix()[row][i].getNumerator();
+            denominator = matrix.getMatrix()[row][i].getDenominator();
+            if(numerator != 0){
+                matrix.getMatrix()[row][i].setNumerator(numerator * leadDenominatorScalar);
+                matrix.getMatrix()[row][i].setDenominator(denominator * leadNumeratorScalar);
+                matrix.getMatrix()[row][i].simplify();
             }
+        }
+        otherNumerator = constantCol[row].getNumerator();
+        otherDenominator = constantCol[row].getDenominator();
+        if(otherNumerator != 0){
+            constantCol[row].setNumerator(otherNumerator * leadDenominatorScalar);
+            constantCol[row].setDenominator(otherDenominator * leadNumeratorScalar);
+            constantCol[row].simplify();
         }
     }
 

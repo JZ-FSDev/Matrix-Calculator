@@ -118,6 +118,20 @@ public abstract class MatrixAlgorithms {
                         constantCol[j].addScalarMultipleCell(constantCol[i], numeratorScalar, denominatorScalar);
                         matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
                     }else{
+                        constantCol[j].addScalarMultipleCell(constantCol[i], -1 * numeratorScalar, denominatorScalar);
+                        matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
+                    }
+                    System.out.println(matrix);
+                    String s = "";
+                    for(int k = 0; k < constantCol.length; k++){
+                        s += constantCol[k] + " ";
+                    }
+                    System.out.println(s);
+                }
+            }
+
+        }
+    }                        
 
     /**
      * Converts the specified matrix to row echelon form.

@@ -243,7 +243,15 @@ public abstract class MatrixAlgorithms {
         System.out.println(toInvert);
     }
 
-
+    private static void printMatrixAndConstantCol(Matrix matrix, MatrixCell[] constantCol){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < matrix.getMatrix().length; i++){
+            for(int j = 0; j < matrix.getMatrix()[i].length; j++){
+                stringBuilder.append()
+            }
+        }
+    }
+    
     /**
      * Performs the inversion algorithm on the specified matrix.  Will halt the algorithm if
      * a column or row of zeros is introduced in the matrix, signifiying that the determinant

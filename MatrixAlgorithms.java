@@ -46,7 +46,7 @@ public abstract class MatrixAlgorithms {
             }
         }
     }
-    
+
     private static void changeLeadNonZeroToOneWithConstants(int row, Matrix matrix, MatrixCell[] constantCol){
         int leadindColIndex = matrix.leadingNonZeroIndex(row);
         if(leadindColIndex == Integer.MAX_VALUE){
@@ -71,7 +71,7 @@ public abstract class MatrixAlgorithms {
             constantCol[row].setDenominator(otherDenominator * leadNumeratorScalar);
             constantCol[row].simplify();
         }
-    } 
+    }
 
     /**
      * Converts the specified matrix to reduced row echelon form.
@@ -131,7 +131,7 @@ public abstract class MatrixAlgorithms {
             }
 
         }
-    }                        
+    }
 
     /**
      * Converts the specified matrix to row echelon form.
@@ -172,22 +172,21 @@ public abstract class MatrixAlgorithms {
     public static void convertToRefFormWithConstants(Matrix matrix, MatrixCell[] constantCol){
         int numeratorScalar, denominatorScalar;
         for(int i = 0; i < matrix.getMatrix().length; i++){
-            int topRow = matrix.leadingNonZeroIndex(i);
-            System.out.println(matrix);
-            matrix.sortByLeadingNonZero();
-            if(topRow != Integer.MAX_VALUE){
-                matrix.changeLeadNonZeroToOne(i);
+            int operatingColIndex = matrix.leadingNonZeroIndex(i);
+            sortByLeadingNonZeroWithConstants(matrix, constantCol);
+            if(operatingColIndex != Integer.MAX_VALUE){
+                changeLeadNonZeroToOneWithConstants(i, matrix, constantCol);
                 for(int j = i + 1; j < matrix.getMatrix()[i].length; j++){
-                    int lowerRow = matrix.leadingNonZeroIndex(j);
-                    if(topRow == lowerRow && lowerRow != Integer.MAX_VALUE){
-                        numeratorScalar = Math.abs(matrix.getMatrix()[j][lowerRow].getNumerator());
-                        denominatorScalar = matrix.getMatrix()[j][lowerRow].getDenominator();
-                        if(matrix.getMatrix()[j][lowerRow].getNumerator() < 0){
+                    int receivingColIndex = matrix.leadingNonZeroIndex(j);
+                    if(operatingColIndex == receivingColIndex && receivingColIndex != Integer.MAX_VALUE){
+                        numeratorScalar = Math.abs(matrix.getMatrix()[j][receivingColIndex].getNumerator());
+                        denominatorScalar = matrix.getMatrix()[j][receivingColIndex].getDenominator();
+                        if(matrix.getMatrix()[j][receivingColIndex].getNumerator() < 0){
+                            constantCol[j].addScalarMultipleCell(constantCol[i], numeratorScalar, denominatorScalar);
                             matrix.rowOperation(j, i, numeratorScalar, denominatorScalar);
-                            constantCol[j].addScalarMultipleCell(matrix.getMatrix()[topRow][i], numeratorScalar, denominatorScalar);
                         }else{
+                            constantCol[j].addScalarMultipleCell(constantCol[i], -1 * numeratorScalar, denominatorScalar);
                             matrix.rowOperation(j, i, -1 * numeratorScalar, denominatorScalar);
-                            constantCol[j].addScalarMultipleCell(matrix.getMatrix()[topRow][i], -1 * numeratorScalar, denominatorScalar);
                         }
                     }
                 }
@@ -243,15 +242,17 @@ public abstract class MatrixAlgorithms {
         System.out.println(toInvert);
     }
 
-    private static void printMatrixAndConstantCol(Matrix matrix, MatrixCell[] constantCol){
+    public static String matrixAndConstantColToString(Matrix matrix, MatrixCell[] constantCol){
         StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i < matrix.getMatrix().length; i++){
             for(int j = 0; j < matrix.getMatrix()[i].length; j++){
-                stringBuilder.append()
+                stringBuilder.append(matrix.getMatrix()[i][j] + "        ");
             }
+            stringBuilder.append("|        " + constantCol[i] + "\n");
         }
+        return stringBuilder.toString();
     }
-    
+
     /**
      * Performs the inversion algorithm on the specified matrix.  Will halt the algorithm if
      * a column or row of zeros is introduced in the matrix, signifiying that the determinant

@@ -51,10 +51,19 @@ public abstract class MatrixAlgorithms {
         int leadindColIndex = matrix.leadingNonZeroIndex(row);
         if(leadindColIndex == Integer.MAX_VALUE){
             leadindColIndex = matrix.getMatrix().length - 1;
-        }
+        }        
         int leadNumeratorScalar = matrix.getMatrix()[row][leadindColIndex].getNumerator();
         int leadDenominatorScalar = matrix.getMatrix()[row][leadindColIndex].getDenominator();
         int numerator, denominator, otherNumerator, otherDenominator;
+        for(int i = 0; i < matrix.getMatrix().length; i++){
+            numerator = matrix.getMatrix()[row][i].getNumerator();
+            denominator = matrix.getMatrix()[row][i].getDenominator();
+            if(numerator != 0){
+                matrix.getMatrix()[row][i].setNumerator(numerator * leadDenominatorScalar);
+                matrix.getMatrix()[row][i].setDenominator(denominator * leadNumeratorScalar);
+                matrix.getMatrix()[row][i].simplify();
+            }
+        }        
     }    
 
     /**
